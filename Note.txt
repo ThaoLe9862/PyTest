@@ -1,0 +1,5 @@
+Reference: https://www.youtube.com/watch?v=byaxg00Gf9I
+1. Using PyCharm application
+2. Install pytest with command: pip install -U pytest
+3. Create file test with ".py" (ex: HelloWorld.py)
+4. Run with command: pytest HelloWorld.py
