@@ -1,5 +1,9 @@
 import pytest
 import requests
+
+global order_id
+order_id = 0
+
 import json
 '''
 def main_url():
@@ -28,6 +32,7 @@ def baseURL():
 @pytest.fixture
 def accessToken():
     return "49896332d65cc5ee6701ac2521b5a66406c9360f3d0c20a9cf5fddfa488be29a"
+
 
 def test_check_API_work(baseURL):
     response = requests.get(baseURL)
@@ -71,11 +76,16 @@ def test_post_API_Authentication(baseURL, accessToken):
     response = requests.post(baseURL + "/api-clients/", json = input_body)
     assert response.status_code == 409
 
+# Update global variable "order_id"
+# Create new order
 def test_post_order_book(baseURL, accessToken):
     header = {"Authorization": "Bearer " + accessToken}
     jsonData = { "bookId": 1, "customerName": "David" }
     response = requests.post(baseURL + "/orders/", headers = header, json = jsonData)
-    #response = requests.request("POST", baseURL + "/orders/", )
+    response_values = json.loads(response.text)
+    # Update value to global variable
+    global order_id
+    order_id = response_values["orderId"]
     assert  response.status_code == 201
 
 #@pytest.mark.skip
@@ -88,16 +98,24 @@ def test_get_list_orders(baseURL, accessToken):
 #@pytest.mark.skip
 def test_update_list_order(baseURL, accessToken):
     header = {"Authorization": "Bearer " + accessToken}
-    id = "VLBZtDCeR7q-9GAyGhX09" # path_variables = {"id": "VLBZtDCeR7q-9GAyGhX09"}
     input_body = {"customerName": "Sumi Bowling"}
+    ''' 
+    # Use id as orderId
+    id = "VLBZtDCeR7q-9GAyGhX09"  # path_variables = {"id": "VLBZtDCeR7q-9GAyGhX09"}
     response = requests.patch(baseURL + "/orders/" + id, headers=header, json=input_body)
+    '''
+    # Using global variable
+    response = requests.patch(baseURL + "/orders/" + order_id, headers=header, json=input_body)
     assert response.status_code == 204
 
 #@pytest.mark.skip
 def test_delete_order(baseURL, accessToken):
     header = {"Authorization": "Bearer " + accessToken}
-    #path_variables = {"id": "8YtkszGI5JykOEjBa1uAu"}
+    '''
+    # Using id as orderId
     id = "VLBZtDCeR7q-9GAyGhX09"
-    #response = requests.delete(baseURL + "/orders/", headers=header, params=path_variables, json=input_body)
     response = requests.delete(baseURL + "/orders/" + id, headers=header)
+    '''
+    # Using global variable
+    response = requests.delete(baseURL + "/orders/" + order_id, headers=header)
     assert response.status_code == 204

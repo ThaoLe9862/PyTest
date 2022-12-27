@@ -1,5 +1,6 @@
 # To run this file using command: python3 Test_api_basic.py
 import requests
+import json
 '''
 # Test 1: run OK
 payload = {
@@ -35,8 +36,8 @@ response = requests.get(baseURL + "/orders/", params=path_variables, headers=hea
 print(response.json())
 print((response))
 '''
-
-# Test 5:
+'''
+# Test 5: run OK
 header = {"Authorization": "Bearer " + accessToken}
 path_variables = {"id": "VLBZtDCeR7q-9GAyGhX09"}
 input_body = {"customerName": "Sumi"}
@@ -45,3 +46,14 @@ response = requests.patch(baseURL + "/orders/" + id, headers=header, json=input_
 #response = requests.patch(baseURL + "/orders/:id", headers=header, params=path_variables)
 print(response.text)
 print(response)
+'''
+
+# Test 6:
+# Create new order
+header = {"Authorization": "Bearer " + accessToken}
+jsonData = { "bookId": 1, "customerName": "David" }
+response = requests.post(baseURL + "/orders/", headers = header, json = jsonData)
+print("response.text: " + response.text)
+#print("response : " + response)
+ret = json.loads(response.text)
+print(ret["orderId"])
